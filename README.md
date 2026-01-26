@@ -8,3 +8,7 @@ This repository contains multiple network simulation projects built with Cisco P
 - Static IP addressing
 - Router & switch configuration
 - HTTP web server
+
+### 2. DHCP Based Office Network
+- Dynamic IP assignment with DHCP server
+- Clients auto-configure IP settings
