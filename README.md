@@ -12,3 +12,9 @@ This repository contains multiple network simulation projects built with Cisco P
 ### 2. DHCP Based Office Network
 - Dynamic IP assignment with DHCP server
 - Clients auto-configure IP settings
+
+### 3. VLAN Segmentation with Inter-VLAN Routing
+- Three departments isolated into separate VLANs (IT, HR, Accounting)
+- Trunk port configuration between switches and router
+- Router-on-a-Stick technique for inter-VLAN routing
+- dot1Q encapsulation on subinterfaces

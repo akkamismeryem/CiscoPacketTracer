@@ -1,0 +1,143 @@
+=====================================================
+  PROJECT 3 — VLAN SEGMENTATION CONFIGURATION
+  Cisco Packet Tracer Lab
+=====================================================
+
+------------------------------------------------------
+NETWORK PLAN
+------------------------------------------------------
+VLAN 10 | IT         | 192.168.10.0/24 | GW: 192.168.10.1
+VLAN 20 | HR         | 192.168.20.0/24 | GW: 192.168.20.1
+VLAN 30 | Muhasebe   | 192.168.30.0/24 | GW: 192.168.30.1
+
+------------------------------------------------------
+PC IP ADDRESSES
+------------------------------------------------------
+PC0  | 192.168.10.2 | 255.255.255.0 | GW: 192.168.10.1 | VLAN 10
+PC1  | 192.168.10.3 | 255.255.255.0 | GW: 192.168.10.1 | VLAN 10
+PC2  | 192.168.20.2 | 255.255.255.0 | GW: 192.168.20.1 | VLAN 20
+PC3  | 192.168.20.3 | 255.255.255.0 | GW: 192.168.20.1 | VLAN 20
+PC4  | 192.168.30.2 | 255.255.255.0 | GW: 192.168.30.1 | VLAN 30
+PC5  | 192.168.30.3 | 255.255.255.0 | GW: 192.168.30.1 | VLAN 30
+
+------------------------------------------------------
+SWITCH1 CONFIGURATION (PC0, PC1 = VLAN10 | PC2, PC3 = VLAN20)
+------------------------------------------------------
+enable
+conf t
+
+vlan 10
+ name IT
+exit
+
+vlan 20
+ name HR
+exit
+
+interface fa0/1
+ switchport mode access
+ switchport access vlan 10
+exit
+
+interface fa0/2
+ switchport mode access
+ switchport access vlan 10
+exit
+
+interface fa0/3
+ switchport mode access
+ switchport access vlan 20
+exit
+
+interface fa0/4
+ switchport mode access
+ switchport access vlan 20
+exit
+
+interface gi0/1
+ switchport mode trunk
+exit
+
+------------------------------------------------------
+SWITCH0 CONFIGURATION (PC4, PC5 = VLAN30)
+------------------------------------------------------
+enable
+conf t
+
+vlan 30
+ name Muhasebe
+exit
+
+interface fa0/1
+ switchport mode access
+ switchport access vlan 30
+exit
+
+interface fa0/2
+ switchport mode access
+ switchport access vlan 30
+exit
+
+interface gi0/1
+ switchport mode trunk
+exit
+
+------------------------------------------------------
+ROUTER1 CONFIGURATION (Router-on-a-Stick)
+------------------------------------------------------
+enable
+conf t
+
+interface gi0/0
+ no shutdown
+exit
+
+interface gi0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+ no shutdown
+exit
+
+interface gi0/0.20
+ encapsulation dot1Q 20
+ ip address 192.168.20.1 255.255.255.0
+ no shutdown
+exit
+
+interface gi0/1
+ no shutdown
+exit
+
+interface gi0/1.30
+ encapsulation dot1Q 30
+ ip address 192.168.30.1 255.255.255.0
+ no shutdown
+exit
+
+------------------------------------------------------
+VERIFICATION COMMANDS
+------------------------------------------------------
+! Router'da
+show ip interface brief
+show ip route
+show running-config | section interface
+
+! Switch'lerde
+show vlan brief
+show interfaces trunk
+
+! PC'lerde (Command Prompt)
+ping 192.168.10.3   ! Ayni VLAN ici (VLAN 10)
+ping 192.168.20.2   ! Farkli VLAN (VLAN 10 -> 20)
+ping 192.168.30.2   ! Farkli VLAN (VLAN 10 -> 30)
+
+------------------------------------------------------
+TEST RESULTS
+------------------------------------------------------
+PC0 -> PC1 (VLAN 10 ici)  : SUCCESS - 0% packet loss
+PC0 -> PC2 (VLAN 10 -> 20): SUCCESS - inter-VLAN routing OK
+PC0 -> PC4 (VLAN 10 -> 30): SUCCESS - inter-VLAN routing OK
+
+Note: First ping timeout is normal (ARP resolution)
+
+=====================================================
